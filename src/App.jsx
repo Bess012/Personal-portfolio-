@@ -4,6 +4,9 @@ import React, { useState } from "react";
 // in the About section below will swap for the real image automatically.
 const photoSrc = "/assets/profilepic.jpg";
 
+// Path to your CV — drop the file at public/assets/cv.pdf
+const cvSrc = "/assets/CV-Bessem.pdf";
+
 const skills = [
   {
     cat: "LANGUAGES",
@@ -505,8 +508,32 @@ export default function App() {
 
       <header className="sticky top-0 z-10 bg-ink/90 backdrop-blur border-b border-amber/20">
         <div className="w-full px-6 lg:px-10 h-16 flex items-center justify-between">
-          <div className="font-mono font-semibold text-[16px]">
-            BESSEM JOUINI
+          <div className="flex items-center gap-4">
+            <div className="font-mono font-semibold text-[16px]">
+              BESSEM JOUINI
+            </div>
+            <a
+              href={cvSrc}
+              download
+              className="group inline-flex items-center gap-1.5 font-mono text-[11px] px-3 py-1.5 border border-amber/40 text-amber hover:bg-amber hover:text-ink transition-colors"
+              title="Download CV"
+            >
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 3v12" />
+                <path d="M7 10l5 5 5-5" />
+                <path d="M5 21h14" />
+              </svg>
+              CV
+            </a>
           </div>
           <nav className="flex gap-6 font-mono text-[13px] text-paperdim">
             <a href="#projects" className="hover:text-amber">
