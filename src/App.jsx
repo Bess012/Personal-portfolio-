@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 // Set this to '/photo.jpg' (or similar) once you have a headshot — the placeholder
 // in the About section below will swap for the real image automatically.
@@ -488,6 +488,175 @@ function Logo({ src, initials, size = "w-11 h-11 text-[12px]" }) {
   );
 }
 
+// These three cards use only contained, no-overflow hover styling (border
+// glow, a slight logo tilt, a text color shift) — unlike the project cards'
+// zoom effect, there's nothing here that breaks or gets "stuck" on touch, so
+// tapping toggles the same highlighted state a mouse hover would give.
+
+// Mirrors real mouse :hover on touch devices: while a finger is down and
+// moving (including while scrolling), each card checks whether the current
+// touch point falls inside its own bounding box and lights up while it does
+// — no tap, no toggle, it just tracks the finger the way hover tracks a
+// mouse. Listeners are document-level and passive so scrolling is untouched.
+function useTouchHover() {
+  const ref = useRef(null);
+  const [active, setActive] = useState(false);
+
+  useEffect(() => {
+    const isInside = (touch) => {
+      const el = ref.current;
+      if (!el || !touch) return false;
+      const rect = el.getBoundingClientRect();
+      return (
+        touch.clientX >= rect.left &&
+        touch.clientX <= rect.right &&
+        touch.clientY >= rect.top &&
+        touch.clientY <= rect.bottom
+      );
+    };
+
+    const handleTouchMove = (event) => {
+      setActive(isInside(event.touches && event.touches[0]));
+    };
+    const clear = () => setActive(false);
+
+    document.addEventListener("touchstart", handleTouchMove, {
+      passive: true,
+    });
+    document.addEventListener("touchmove", handleTouchMove, {
+      passive: true,
+    });
+    document.addEventListener("touchend", clear, { passive: true });
+    document.addEventListener("touchcancel", clear, { passive: true });
+
+    return () => {
+      document.removeEventListener("touchstart", handleTouchMove);
+      document.removeEventListener("touchmove", handleTouchMove);
+      document.removeEventListener("touchend", clear);
+      document.removeEventListener("touchcancel", clear);
+    };
+  }, []);
+
+  return [ref, active];
+}
+
+function ExperienceCard({ e }) {
+  const [ref, active] = useTouchHover();
+  return (
+    <div
+      ref={ref}
+      className={`group border p-6 mb-6 transition-all duration-200 ${
+        active
+          ? "border-amber/50 bg-amber/5"
+          : "border-amber/20 hover:border-amber/50 hover:bg-amber/5"
+      }`}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
+        <div>
+          <div className="font-mono text-[12.5px] text-amberdim mb-4">
+            {e.when}
+          </div>
+          <div
+            className={`transition-transform duration-300 w-fit ${
+              active
+                ? "scale-105 -rotate-3"
+                : "group-hover:scale-105 group-hover:-rotate-3"
+            }`}
+          >
+            <Logo src={e.logo} size="w-20 h-20 text-[20px]" />
+          </div>
+          <div
+            className={`mt-4 font-mono text-[12px] transition-colors ${
+              active ? "text-paper" : "text-paperdim group-hover:text-paper"
+            }`}
+          >
+            {e.company}
+          </div>
+        </div>
+        <div>
+          <h3
+            className={`text-[17px] font-semibold mb-2 transition-colors ${
+              active ? "text-amber" : "group-hover:text-amber"
+            }`}
+          >
+            {e.role}
+          </h3>
+          <p className="text-paperdim text-[14.5px]">{e.desc}</p>
+          <div className="mt-3 flex gap-2 flex-wrap">
+            {e.stack.map((t) => (
+              <Tag key={t}>{t}</Tag>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function EducationCard({ e }) {
+  const [ref, active] = useTouchHover();
+  return (
+    <div
+      ref={ref}
+      className={`group border p-6 mb-6 transition-all duration-200 ${
+        active
+          ? "border-amber/50 bg-amber/5"
+          : "border-amber/20 hover:border-amber/50 hover:bg-amber/5"
+      }`}
+    >
+      <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
+        <div className="font-mono text-[12.5px] text-amberdim">{e.when}</div>
+        <div>
+          <h3
+            className={`text-[16px] font-semibold transition-colors ${
+              active ? "text-amber" : "group-hover:text-amber"
+            }`}
+          >
+            {e.name}
+          </h3>
+          <p className="text-paperdim text-sm mt-1">{e.detail}</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CertCard({ c }) {
+  const [ref, active] = useTouchHover();
+  return (
+    <div
+      ref={ref}
+      className={`group border p-5 flex items-center gap-5 transition-all duration-200 ${
+        active
+          ? "border-amber/50 bg-amber/5"
+          : "border-amber/20 hover:border-amber/50 hover:bg-amber/5"
+      }`}
+    >
+      <div
+        className={`transition-transform duration-300 shrink-0 ${
+          active
+            ? "scale-105 -rotate-3"
+            : "group-hover:scale-105 group-hover:-rotate-3"
+        }`}
+      >
+        <Logo src={c.logoSrc} size="w-14 h-14 text-[14px]" />
+      </div>
+      <div>
+        <h3
+          className={`text-[15px] font-semibold leading-tight transition-colors ${
+            active ? "text-amber" : "group-hover:text-amber"
+          }`}
+        >
+          {c.name}
+        </h3>
+        <div className="mt-1 font-mono text-[11px] text-amberdim">
+          {c.company}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function App() {
   const [expandedImage, setExpandedImage] = useState(null);
   const [activeSection, setActiveSection] = useState("");
@@ -772,36 +941,8 @@ export default function App() {
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-14">
           <Rail idx="04" title="Experience" />
           <div>
-            {experience.map((e, i) => (
-              <div
-                key={e.role}
-                className="group border border-amber/20 bg-panel p-6 mb-6 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
-                  <div>
-                    <div className="font-mono text-[12.5px] text-amberdim mb-4">
-                      {e.when}
-                    </div>
-                    <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 w-fit">
-                      <Logo src={e.logo} size="w-20 h-20 text-[20px]" />
-                    </div>
-                    <div className="mt-4 font-mono text-[12px] text-paperdim transition-colors group-hover:text-paper">
-                      {e.company}
-                    </div>
-                  </div>
-                  <div>
-                    <h3 className="text-[17px] font-semibold mb-2 transition-colors group-hover:text-amber">
-                      {e.role}
-                    </h3>
-                    <p className="text-paperdim text-[14.5px]">{e.desc}</p>
-                    <div className="mt-3 flex gap-2 flex-wrap">
-                      {e.stack.map((t) => (
-                        <Tag key={t}>{t}</Tag>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
+            {experience.map((e) => (
+              <ExperienceCard key={e.role} e={e} />
             ))}
           </div>
         </div>
@@ -811,23 +952,8 @@ export default function App() {
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-14">
           <Rail idx="05" title="Education" />
           <div>
-            {education.map((e, i) => (
-              <div
-                key={e.name}
-                className="group border border-amber/20 bg-panel p-6 mb-6 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
-              >
-                <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
-                  <div className="font-mono text-[12.5px] text-amberdim">
-                    {e.when}
-                  </div>
-                  <div>
-                    <h3 className="text-[16px] font-semibold transition-colors group-hover:text-amber">
-                      {e.name}
-                    </h3>
-                    <p className="text-paperdim text-sm mt-1">{e.detail}</p>
-                  </div>
-                </div>
-              </div>
+            {education.map((e) => (
+              <EducationCard key={e.name} e={e} />
             ))}
           </div>
         </div>
@@ -838,22 +964,7 @@ export default function App() {
           <Rail idx="06" title="Certifications" />
           <div className="grid sm:grid-cols-2 gap-5">
             {certs.map((c) => (
-              <div
-                key={c.name}
-                className="group border border-amber/20 bg-panel p-5 flex items-center gap-5 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
-              >
-                <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 shrink-0">
-                  <Logo src={c.logoSrc} size="w-14 h-14 text-[14px]" />
-                </div>
-                <div>
-                  <h3 className="text-[15px] font-semibold leading-tight transition-colors group-hover:text-amber">
-                    {c.name}
-                  </h3>
-                  <div className="mt-1 font-mono text-[11px] text-amberdim">
-                    {c.company}
-                  </div>
-                </div>
-              </div>
+              <CertCard key={c.name} c={c} />
             ))}
           </div>
         </div>
