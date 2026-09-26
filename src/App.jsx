@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 // Set this to '/photo.jpg' (or similar) once you have a headshot — the placeholder
 // in the About section below will swap for the real image automatically.
@@ -222,6 +222,14 @@ const certs = [
   },
 ];
 
+const navLinks = [
+  { id: "home", label: "Home" },
+  { id: "about", label: "About" },
+  { id: "projects", label: "Projects" },
+  { id: "skills", label: "Skills" },
+  { id: "contact", label: "Contact" },
+];
+
 function Rail({ idx, title }) {
   return (
     <div className="lg:sticky lg:top-24 lg:pr-8">
@@ -291,11 +299,11 @@ function ProjectCard({ p }) {
 
   return (
     <div
-      className="select-none cursor-pointer group/card relative z-0 hover:z-50 transition-all duration-300"
+      className="pc-card select-none cursor-pointer touch-manipulation relative z-0 transition-all duration-300"
       style={{ perspective: "1400px" }}
       onClick={() => setFlipped(!flipped)}
     >
-      <div className="transition-all duration-500 transform-gpu group-hover/card:scale-[1.35] group-hover/card:shadow-2xl h-full origin-center">
+      <div className="pc-card-inner transition-all duration-500 transform-gpu h-full origin-center">
         <div
           style={{
             transformStyle: "preserve-3d",
@@ -376,7 +384,7 @@ function ProjectCard({ p }) {
                 )}
               </div>
               {p.image && (
-                <div className="mt-3 font-mono text-[10px] text-amber/40 flex items-center gap-1.5 transition-opacity group-hover/card:opacity-100 opacity-60">
+                <div className="pc-hint mt-3 font-mono text-[10px] text-amber/40 flex items-center gap-1.5 transition-opacity opacity-70">
                   <svg
                     width="10"
                     height="10"
@@ -387,7 +395,7 @@ function ProjectCard({ p }) {
                   >
                     <path d="M7 16L3 12l4-4M17 8l4 4-4 4M14 4l-4 16" />
                   </svg>
-                  click to flip for details
+                  tap to flip for details
                 </div>
               )}
             </div>
@@ -421,7 +429,7 @@ function ProjectCard({ p }) {
               ))}
             </div>
             <div className="mt-4 font-mono text-[10px] text-amber/40">
-              ↩ click to flip back
+              ↩ tap to flip back
             </div>
           </div>
         </div>
@@ -443,15 +451,17 @@ function TerminalPanel() {
     { t: "> ", c: "result: ready to build", dim: true },
   ];
   return (
-    <div className="font-mono text-[13px] leading-relaxed">
+    <div className="font-mono text-[11.5px] sm:text-[13px] leading-relaxed">
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber/15">
-        <span className="w-2.5 h-2.5 rounded-full bg-amber/60" />
-        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40" />
-        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40" />
-        <span className="ml-2 text-paperdim/70 text-[11.5px]">session.log</span>
+        <span className="w-2.5 h-2.5 rounded-full bg-amber/60 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40 shrink-0" />
+        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40 shrink-0" />
+        <span className="ml-2 text-paperdim/70 text-[10.5px] sm:text-[11.5px]">
+          session.log
+        </span>
       </div>
       {lines.map((l, i) => (
-        <div key={i}>
+        <div key={i} className="whitespace-pre-wrap break-words">
           <span className={l.dim ? "text-paperdim" : "text-amber"}>{l.t}</span>
           <span className={l.dim ? "text-paperdim" : "text-paper"}>{l.c}</span>
         </div>
@@ -480,6 +490,40 @@ function Logo({ src, initials, size = "w-11 h-11 text-[12px]" }) {
 
 export default function App() {
   const [expandedImage, setExpandedImage] = useState(null);
+  const [activeSection, setActiveSection] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) setMenuOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const sections = navLinks
+      .map((l) => document.getElementById(l.id))
+      .filter(Boolean);
+
+    if (sections.length === 0) return;
+
+    // A thin band around the vertical middle of the viewport — whichever
+    // section is crossing it becomes "active" in the nav.
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveSection(entry.target.id);
+          }
+        });
+      },
+      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
+    );
+
+    sections.forEach((s) => observer.observe(s));
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <div>
@@ -535,25 +579,78 @@ export default function App() {
               CV
             </a>
           </div>
-          <nav className="flex gap-6 font-mono text-[13px] text-paperdim">
-            <a href="#projects" className="hover:text-amber">
-              Projects
-            </a>
-            <a href="#experience" className="hover:text-amber">
-              Experience
-            </a>
-            <a href="#skills" className="hover:text-amber">
-              Skills
-            </a>
-            <a href="#contact" className="hover:text-amber">
-              Contact
-            </a>
+
+          {/* Desktop nav — all 5 sections, always visible from md up */}
+          <nav className="hidden md:flex gap-6 font-mono text-[13px] text-paperdim">
+            {navLinks.map((l) => (
+              <a
+                key={l.id}
+                href={`#${l.id}`}
+                className={`transition-colors ${
+                  activeSection === l.id ? "text-amber" : "hover:text-amber"
+                }`}
+              >
+                {l.label}
+              </a>
+            ))}
           </nav>
+
+          {/* Mobile menu toggle — only exists below md */}
+          <button
+            className="md:hidden inline-flex items-center justify-center w-9 h-9 border border-amber/30 text-amber shrink-0"
+            aria-label={menuOpen ? "Close menu" : "Open menu"}
+            aria-expanded={menuOpen}
+            onClick={() => setMenuOpen((v) => !v)}
+          >
+            {menuOpen ? (
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M18 6L6 18M6 6l12 12" />
+              </svg>
+            ) : (
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+              >
+                <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            )}
+          </button>
         </div>
+
+        {/* Mobile dropdown — same 5 links as desktop, nothing hidden */}
+        {menuOpen && (
+          <nav className="md:hidden border-t border-amber/20 bg-ink/95 backdrop-blur flex flex-col px-6 py-2 font-mono text-[14px]">
+            {navLinks.map((l) => (
+              <a
+                key={l.id}
+                href={`#${l.id}`}
+                onClick={() => setMenuOpen(false)}
+                className={`py-3 border-b border-amber/10 last:border-b-0 ${
+                  activeSection === l.id ? "text-amber" : "text-paperdim"
+                }`}
+              >
+                {l.label}
+              </a>
+            ))}
+          </nav>
+        )}
       </header>
 
-      <section className="border-b border-amber/20">
-        <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-20 lg:py-28 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
+      <section id="home" className="border-b border-amber/20">
+        <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-20 lg:py-28 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-14 items-center">
           <div>
             <h1 className="font-bold leading-[1.06] text-[clamp(36px,5vw,64px)]">
               I build software that turns raw data into decisions.
@@ -578,7 +675,7 @@ export default function App() {
               </a>
             </div>
           </div>
-          <div className="hidden lg:block border border-amber/20 bg-panel p-6 group hover:border-amber/50 hover:bg-amber/5 transition-all duration-200">
+          <div className="w-full max-w-full overflow-hidden border border-amber/20 bg-panel p-4 sm:p-6 group hover:border-amber/50 hover:bg-amber/5 transition-all duration-200">
             <TerminalPanel />
           </div>
         </div>

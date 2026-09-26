@@ -16,3 +16,23 @@ body {
   background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
   background-attachment: fixed, fixed, scroll, scroll;
 }
+
+/*
+ * Project cards: the "zoom in and float above its neighbors" effect is a
+ * desktop-hover flourish. On touch devices, :hover triggers on tap and can
+ * get stuck until the user taps elsewhere, so it must never apply there —
+ * (hover: hover) and (pointer: fine) only match real mice/trackpads.
+ * Tap-to-flip (React state) works identically on every device either way.
+ */
+@media (hover: hover) and (pointer: fine) {
+  .pc-card:hover .pc-card-inner {
+    transform: scale(1.15);
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  }
+  .pc-card:hover {
+    z-index: 50;
+  }
+  .pc-card:hover .pc-hint {
+    opacity: 1;
+  }
+}
