@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState } from "react";
 
 // Set this to '/photo.jpg' (or similar) once you have a headshot — the placeholder
 // in the About section below will swap for the real image automatically.
@@ -53,8 +53,8 @@ const skills = [
     cat: "AI / DATA",
     items: [
       { name: "PyTorch", icon: "devicon-pytorch-original colored" },
-      { name: "Pandas", iconSrc: "https://cdn.simpleicons.org/pandas/150458" },
-      { name: "NumPy", iconSrc: "https://cdn.simpleicons.org/numpy/013243" },
+      { name: "Pandas", iconSrc: "https://cdn.simpleicons.org/pandas/E70488" },
+      { name: "NumPy", iconSrc: "https://cdn.simpleicons.org/numpy/4DABCF" },
       { name: "TensorFlow", icon: "devicon-tensorflow-original colored" },
     ],
   },
@@ -229,14 +229,6 @@ const certs = [
   },
 ];
 
-const navLinks = [
-  { id: "home", label: "Home" },
-  { id: "about", label: "About" },
-  { id: "projects", label: "Projects" },
-  { id: "skills", label: "Skills" },
-  { id: "contact", label: "Contact" },
-];
-
 function Rail({ idx, title }) {
   return (
     <div className="lg:sticky lg:top-24 lg:pr-8">
@@ -257,7 +249,6 @@ function Tag({ children }) {
 }
 
 function Photo({ src }) {
-  const [ref, active] = useTouchHover();
   const inner = src ? (
     <img
       src={src}
@@ -285,23 +276,14 @@ function Photo({ src }) {
   );
 
   return (
-    <div ref={ref} className="group relative" style={{ perspective: "1000px" }}>
-      <div
-        className={`transition-transform duration-500 transform-gpu relative z-10 bg-panel ${
-          active
-            ? "rotate-y-12 rotate-x-12 scale-105 shadow-[0_0_30px_rgba(232,163,61,0.15)]"
-            : "group-hover:rotate-y-12 group-hover:rotate-x-12 group-hover:scale-105 group-hover:shadow-[0_0_30px_rgba(232,163,61,0.15)]"
-        }`}
-      >
+    <div
+      className="group cursor-pointer relative"
+      style={{ perspective: "1000px" }}
+    >
+      <div className="transition-transform duration-500 transform-gpu group-hover:rotate-y-12 group-hover:rotate-x-12 group-hover:scale-105 group-hover:shadow-[0_0_30px_rgba(232,163,61,0.15)] relative z-10 bg-panel">
         {inner}
       </div>
-      <div
-        className={`absolute inset-0 bg-amber/20 transition-transform duration-500 transform-gpu z-0 ${
-          active
-            ? "-translate-x-2 translate-y-2"
-            : "group-hover:-translate-x-2 group-hover:translate-y-2"
-        }`}
-      ></div>
+      <div className="absolute inset-0 bg-amber/20 transition-transform duration-500 transform-gpu group-hover:-translate-x-2 group-hover:translate-y-2 z-0"></div>
     </div>
   );
 }
@@ -316,11 +298,11 @@ function ProjectCard({ p }) {
 
   return (
     <div
-      className="pc-card select-none cursor-pointer touch-manipulation relative z-0 transition-all duration-300"
+      className="select-none cursor-pointer group/card relative z-0 hover:z-50 transition-all duration-300"
       style={{ perspective: "1400px" }}
       onClick={() => setFlipped(!flipped)}
     >
-      <div className="pc-card-inner transition-all duration-500 transform-gpu h-full origin-center">
+      <div className="transition-all duration-500 transform-gpu group-hover/card:scale-[1.35] group-hover/card:shadow-2xl h-full origin-center">
         <div
           style={{
             transformStyle: "preserve-3d",
@@ -401,7 +383,7 @@ function ProjectCard({ p }) {
                 )}
               </div>
               {p.image && (
-                <div className="pc-hint mt-3 font-mono text-[10px] text-amber/40 flex items-center gap-1.5 transition-opacity opacity-70">
+                <div className="mt-3 font-mono text-[10px] text-amber/40 flex items-center gap-1.5 transition-opacity group-hover/card:opacity-100 opacity-60">
                   <svg
                     width="10"
                     height="10"
@@ -412,7 +394,7 @@ function ProjectCard({ p }) {
                   >
                     <path d="M7 16L3 12l4-4M17 8l4 4-4 4M14 4l-4 16" />
                   </svg>
-                  tap to flip for details
+                  click to flip for details
                 </div>
               )}
             </div>
@@ -446,7 +428,7 @@ function ProjectCard({ p }) {
               ))}
             </div>
             <div className="mt-4 font-mono text-[10px] text-amber/40">
-              ↩ tap to flip back
+              ↩ click to flip back
             </div>
           </div>
         </div>
@@ -468,17 +450,15 @@ function TerminalPanel() {
     { t: "> ", c: "result: ready to build", dim: true },
   ];
   return (
-    <div className="font-mono text-[11.5px] sm:text-[13px] leading-relaxed">
+    <div className="font-mono text-[13px] leading-relaxed">
       <div className="flex items-center gap-2 mb-4 pb-3 border-b border-amber/15">
-        <span className="w-2.5 h-2.5 rounded-full bg-amber/60 shrink-0" />
-        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40 shrink-0" />
-        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40 shrink-0" />
-        <span className="ml-2 text-paperdim/70 text-[10.5px] sm:text-[11.5px]">
-          session.log
-        </span>
+        <span className="w-2.5 h-2.5 rounded-full bg-amber/60" />
+        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40" />
+        <span className="w-2.5 h-2.5 rounded-full bg-paperdim/40" />
+        <span className="ml-2 text-paperdim/70 text-[11.5px]">session.log</span>
       </div>
       {lines.map((l, i) => (
-        <div key={i} className="whitespace-pre-wrap break-words">
+        <div key={i}>
           <span className={l.dim ? "text-paperdim" : "text-amber"}>{l.t}</span>
           <span className={l.dim ? "text-paperdim" : "text-paper"}>{l.c}</span>
         </div>
@@ -505,263 +485,8 @@ function Logo({ src, initials, size = "w-11 h-11 text-[12px]" }) {
   );
 }
 
-// These three cards use only contained, no-overflow hover styling (border
-// glow, a slight logo tilt, a text color shift) — unlike the project cards'
-// zoom effect, there's nothing here that breaks or gets "stuck" on touch, so
-// tapping toggles the same highlighted state a mouse hover would give.
-
-// Mirrors real mouse :hover on touch devices: while a finger is down and
-// moving (including while scrolling), each card checks whether the current
-// touch point falls inside its own bounding box and lights up while it does
-// — no tap, no toggle, it just tracks the finger the way hover tracks a
-// mouse. Listeners are document-level and passive so scrolling is untouched.
-function useTouchHover() {
-  const ref = useRef(null);
-  const [active, setActive] = useState(false);
-
-  useEffect(() => {
-    const isInside = (touch) => {
-      const el = ref.current;
-      if (!el || !touch) return false;
-      const rect = el.getBoundingClientRect();
-      return (
-        touch.clientX >= rect.left &&
-        touch.clientX <= rect.right &&
-        touch.clientY >= rect.top &&
-        touch.clientY <= rect.bottom
-      );
-    };
-
-    const handleTouchMove = (event) => {
-      setActive(isInside(event.touches && event.touches[0]));
-    };
-    const clear = () => setActive(false);
-
-    document.addEventListener("touchstart", handleTouchMove, {
-      passive: true,
-    });
-    document.addEventListener("touchmove", handleTouchMove, {
-      passive: true,
-    });
-    document.addEventListener("touchend", clear, { passive: true });
-    document.addEventListener("touchcancel", clear, { passive: true });
-
-    return () => {
-      document.removeEventListener("touchstart", handleTouchMove);
-      document.removeEventListener("touchmove", handleTouchMove);
-      document.removeEventListener("touchend", clear);
-      document.removeEventListener("touchcancel", clear);
-    };
-  }, []);
-
-  return [ref, active];
-}
-
-function ExperienceCard({ e }) {
-  const [ref, active] = useTouchHover();
-  return (
-    <div
-      ref={ref}
-      className={`group border p-6 mb-6 transition-all duration-200 ${
-        active
-          ? "border-amber/50 bg-amber/5"
-          : "border-amber/20 hover:border-amber/50 hover:bg-amber/5"
-      }`}
-    >
-      <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
-        <div>
-          <div className="font-mono text-[12.5px] text-amberdim mb-4">
-            {e.when}
-          </div>
-          <div
-            className={`transition-transform duration-300 w-fit ${
-              active
-                ? "scale-105 -rotate-3"
-                : "group-hover:scale-105 group-hover:-rotate-3"
-            }`}
-          >
-            <Logo src={e.logo} size="w-20 h-20 text-[20px]" />
-          </div>
-          <div
-            className={`mt-4 font-mono text-[12px] transition-colors ${
-              active ? "text-paper" : "text-paperdim group-hover:text-paper"
-            }`}
-          >
-            {e.company}
-          </div>
-        </div>
-        <div>
-          <h3
-            className={`text-[17px] font-semibold mb-2 transition-colors ${
-              active ? "text-amber" : "group-hover:text-amber"
-            }`}
-          >
-            {e.role}
-          </h3>
-          <p className="text-paperdim text-[14.5px]">{e.desc}</p>
-          <div className="mt-3 flex gap-2 flex-wrap">
-            {e.stack.map((t) => (
-              <Tag key={t}>{t}</Tag>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function EducationCard({ e }) {
-  const [ref, active] = useTouchHover();
-  return (
-    <div
-      ref={ref}
-      className={`group border p-6 mb-6 transition-all duration-200 ${
-        active
-          ? "border-amber/50 bg-amber/5"
-          : "border-amber/20 hover:border-amber/50 hover:bg-amber/5"
-      }`}
-    >
-      <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
-        <div className="font-mono text-[12.5px] text-amberdim">{e.when}</div>
-        <div>
-          <h3
-            className={`text-[16px] font-semibold transition-colors ${
-              active ? "text-amber" : "group-hover:text-amber"
-            }`}
-          >
-            {e.name}
-          </h3>
-          <p className="text-paperdim text-sm mt-1">{e.detail}</p>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function CertCard({ c }) {
-  const [ref, active] = useTouchHover();
-  return (
-    <div
-      ref={ref}
-      className={`group border p-5 flex items-center gap-5 transition-all duration-200 ${
-        active
-          ? "border-amber/50 bg-amber/5"
-          : "border-amber/20 hover:border-amber/50 hover:bg-amber/5"
-      }`}
-    >
-      <div
-        className={`transition-transform duration-300 shrink-0 ${
-          active
-            ? "scale-105 -rotate-3"
-            : "group-hover:scale-105 group-hover:-rotate-3"
-        }`}
-      >
-        <Logo src={c.logoSrc} size="w-14 h-14 text-[14px]" />
-      </div>
-      <div>
-        <h3
-          className={`text-[15px] font-semibold leading-tight transition-colors ${
-            active ? "text-amber" : "group-hover:text-amber"
-          }`}
-        >
-          {c.name}
-        </h3>
-        <div className="mt-1 font-mono text-[11px] text-amberdim">
-          {c.company}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function ContactLink({ href, target, rel, icon, label, value, truncateValue }) {
-  const [ref, active] = useTouchHover();
-  return (
-    <a
-      ref={ref}
-      href={href}
-      target={target}
-      rel={rel}
-      className={`group flex items-center gap-4 border p-4 transition-all duration-200 ${
-        active
-          ? "border-amber/50 bg-amber/5"
-          : "border-amber/20 bg-panel hover:border-amber/50 hover:bg-amber/5"
-      }`}
-    >
-      <div
-        className={`w-10 h-10 shrink-0 border border-amber/30 flex items-center justify-center transition-all duration-200 ${
-          active
-            ? "bg-amber text-ink"
-            : "bg-ink text-amber group-hover:bg-amber group-hover:text-ink"
-        }`}
-      >
-        {icon}
-      </div>
-      <div className="min-w-0">
-        <div className="font-mono text-[10.5px] text-amberdim mb-0.5 uppercase tracking-wider">
-          {label}
-        </div>
-        <div
-          className={`font-mono text-[13.5px] text-paper ${
-            truncateValue ? "truncate" : ""
-          }`}
-        >
-          {value}
-        </div>
-      </div>
-      <svg
-        className={`ml-auto shrink-0 w-4 h-4 transition-all duration-200 ${
-          active
-            ? "text-amber translate-x-1"
-            : "text-amber/30 group-hover:text-amber group-hover:translate-x-1"
-        }`}
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="2"
-      >
-        <path d="M5 12h14M12 5l7 7-7 7" />
-      </svg>
-    </a>
-  );
-}
-
 export default function App() {
   const [expandedImage, setExpandedImage] = useState(null);
-  const [activeSection, setActiveSection] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) setMenuOpen(false);
-    };
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-
-  useEffect(() => {
-    const sections = navLinks
-      .map((l) => document.getElementById(l.id))
-      .filter(Boolean);
-
-    if (sections.length === 0) return;
-
-    // A thin band around the vertical middle of the viewport — whichever
-    // section is crossing it becomes "active" in the nav.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveSection(entry.target.id);
-          }
-        });
-      },
-      { rootMargin: "-45% 0px -50% 0px", threshold: 0 },
-    );
-
-    sections.forEach((s) => observer.observe(s));
-    return () => observer.disconnect();
-  }, []);
 
   return (
     <div>
@@ -817,76 +542,36 @@ export default function App() {
               CV
             </a>
           </div>
-          <nav className="flex gap-6 font-mono text-[13px] text-paperdim">
+          <nav className="flex gap-4 lg:gap-6 font-mono text-[13px] text-paperdim overflow-x-auto whitespace-nowrap min-w-0 ml-4">
+            <a href="#home" className="hover:text-amber">
+              Home
+            </a>
+            <a href="#about" className="hover:text-amber">
+              About
+            </a>
+            <a href="#skills" className="hover:text-amber">
+              Skills
+            </a>
             <a href="#projects" className="hover:text-amber">
               Projects
             </a>
             <a href="#experience" className="hover:text-amber">
               Experience
             </a>
-            <a href="#skills" className="hover:text-amber">
-              Skills
+            <a href="#education" className="hover:text-amber">
+              Education
+            </a>
+            <a href="#certs" className="hover:text-amber">
+              Certification
             </a>
             <a href="#contact" className="hover:text-amber">
               Contact
             </a>
           </nav>
-
-          {/* Mobile menu toggle — only exists below md */}
-          <button
-            className="md:hidden inline-flex items-center justify-center w-9 h-9 border border-amber/30 text-amber shrink-0"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            onClick={() => setMenuOpen((v) => !v)}
-          >
-            {menuOpen ? (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              >
-                <path d="M18 6L6 18M6 6l12 12" />
-              </svg>
-            ) : (
-              <svg
-                width="18"
-                height="18"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-              >
-                <path d="M3 6h18M3 12h18M3 18h18" />
-              </svg>
-            )}
-          </button>
         </div>
-
-        {/* Mobile dropdown — same 5 links as desktop, nothing hidden */}
-        {menuOpen && (
-          <nav className="md:hidden border-t border-amber/20 bg-ink/95 backdrop-blur flex flex-col px-6 py-2 font-mono text-[14px]">
-            {navLinks.map((l) => (
-              <a
-                key={l.id}
-                href={`#${l.id}`}
-                onClick={() => setMenuOpen(false)}
-                className={`py-3 border-b border-amber/10 last:border-b-0 ${
-                  activeSection === l.id ? "text-amber" : "text-paperdim"
-                }`}
-              >
-                {l.label}
-              </a>
-            ))}
-          </nav>
-        )}
       </header>
 
-      <section className="border-b border-amber/20">
+      <section id="home" className="border-b border-amber/20">
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-20 lg:py-28 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
           <div>
             <h1 className="font-bold leading-[1.06] text-[clamp(36px,5vw,64px)]">
@@ -912,7 +597,7 @@ export default function App() {
               </a>
             </div>
           </div>
-          <div className="w-full max-w-full overflow-hidden border border-amber/20 bg-panel p-4 sm:p-6 group hover:border-amber/50 hover:bg-amber/5 transition-all duration-200">
+          <div className="hidden lg:block border border-amber/20 bg-panel p-6 group hover:border-amber/50 hover:bg-amber/5 transition-all duration-200">
             <TerminalPanel />
           </div>
         </div>
@@ -956,8 +641,13 @@ export default function App() {
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-14">
           <Rail idx="02" title="Skills" />
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-px bg-amber/20 border border-amber/20">
-            {skills.map((s) => (
-              <div key={s.cat} className="bg-panel p-6">
+            {skills.map((s, i) => (
+              <div
+                key={s.cat}
+                className={`bg-panel p-6 ${
+                  i === skills.length - 1 ? "sm:col-span-2 xl:col-span-3" : ""
+                }`}
+              >
                 <div className="font-mono text-xs text-amber mb-3">{s.cat}</div>
                 <div className="flex flex-wrap gap-3">
                   {s.items.map((item) => (
@@ -1009,8 +699,36 @@ export default function App() {
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-14">
           <Rail idx="04" title="Experience" />
           <div>
-            {experience.map((e) => (
-              <ExperienceCard key={e.role} e={e} />
+            {experience.map((e, i) => (
+              <div
+                key={e.role}
+                className="group border border-amber/20 bg-panel p-6 mb-6 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
+                  <div>
+                    <div className="font-mono text-[12.5px] text-amberdim mb-4">
+                      {e.when}
+                    </div>
+                    <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 w-fit">
+                      <Logo src={e.logo} size="w-20 h-20 text-[20px]" />
+                    </div>
+                    <div className="mt-4 font-mono text-[12px] text-paperdim transition-colors group-hover:text-paper">
+                      {e.company}
+                    </div>
+                  </div>
+                  <div>
+                    <h3 className="text-[17px] font-semibold mb-2 transition-colors group-hover:text-amber">
+                      {e.role}
+                    </h3>
+                    <p className="text-paperdim text-[14.5px]">{e.desc}</p>
+                    <div className="mt-3 flex gap-2 flex-wrap">
+                      {e.stack.map((t) => (
+                        <Tag key={t}>{t}</Tag>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1020,8 +738,23 @@ export default function App() {
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-14">
           <Rail idx="05" title="Education" />
           <div>
-            {education.map((e) => (
-              <EducationCard key={e.name} e={e} />
+            {education.map((e, i) => (
+              <div
+                key={e.name}
+                className="group border border-amber/20 bg-panel p-6 mb-6 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-[170px_1fr] gap-6">
+                  <div className="font-mono text-[12.5px] text-amberdim">
+                    {e.when}
+                  </div>
+                  <div>
+                    <h3 className="text-[16px] font-semibold transition-colors group-hover:text-amber">
+                      {e.name}
+                    </h3>
+                    <p className="text-paperdim text-sm mt-1">{e.detail}</p>
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1032,7 +765,22 @@ export default function App() {
           <Rail idx="06" title="Certifications" />
           <div className="grid sm:grid-cols-2 gap-5">
             {certs.map((c) => (
-              <CertCard key={c.name} c={c} />
+              <div
+                key={c.name}
+                className="group border border-amber/20 bg-panel p-5 flex items-center gap-5 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+              >
+                <div className="transition-transform duration-300 group-hover:scale-105 group-hover:-rotate-3 shrink-0">
+                  <Logo src={c.logoSrc} size="w-14 h-14 text-[14px]" />
+                </div>
+                <div>
+                  <h3 className="text-[15px] font-semibold leading-tight transition-colors group-hover:text-amber">
+                    {c.name}
+                  </h3>
+                  <div className="mt-1 font-mono text-[11px] text-amberdim">
+                    {c.company}
+                  </div>
+                </div>
+              </div>
             ))}
           </div>
         </div>
@@ -1055,12 +803,11 @@ export default function App() {
                 inbox is open.
               </p>
               <div className="mt-8 flex flex-col gap-3">
-                <ContactLink
+                <a
                   href="mailto:bassemjouini33@gmail.com"
-                  label="Email"
-                  value="bassemjouini33@gmail.com"
-                  truncateValue
-                  icon={
+                  className="group flex items-center gap-4 border border-amber/20 bg-panel p-4 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+                >
+                  <div className="w-10 h-10 shrink-0 border border-amber/30 bg-ink flex items-center justify-center text-amber group-hover:bg-amber group-hover:text-ink transition-all duration-200">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
@@ -1071,13 +818,30 @@ export default function App() {
                       <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
                       <polyline points="22,6 12,13 2,6" />
                     </svg>
-                  }
-                />
-                <ContactLink
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-mono text-[10.5px] text-amberdim mb-0.5 uppercase tracking-wider">
+                      Email
+                    </div>
+                    <div className="font-mono text-[13.5px] text-paper truncate">
+                      bassemjouini33@gmail.com
+                    </div>
+                  </div>
+                  <svg
+                    className="ml-auto shrink-0 w-4 h-4 text-amber/30 group-hover:text-amber group-hover:translate-x-1 transition-all duration-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+                <a
                   href="tel:+21652418280"
-                  label="Phone"
-                  value="+216 52 418 280"
-                  icon={
+                  className="group flex items-center gap-4 border border-amber/20 bg-panel p-4 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+                >
+                  <div className="w-10 h-10 shrink-0 border border-amber/30 bg-ink flex items-center justify-center text-amber group-hover:bg-amber group-hover:text-ink transition-all duration-200">
                     <svg
                       viewBox="0 0 24 24"
                       fill="none"
@@ -1087,15 +851,32 @@ export default function App() {
                     >
                       <path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.8a19.79 19.79 0 01-3.07-8.67A2 2 0 012 0h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92v2z" />
                     </svg>
-                  }
-                />
-                <ContactLink
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-mono text-[10.5px] text-amberdim mb-0.5 uppercase tracking-wider">
+                      Phone
+                    </div>
+                    <div className="font-mono text-[13.5px] text-paper">
+                      +216 52 418 280
+                    </div>
+                  </div>
+                  <svg
+                    className="ml-auto shrink-0 w-4 h-4 text-amber/30 group-hover:text-amber group-hover:translate-x-1 transition-all duration-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+                <a
                   href="https://github.com/Bess012"
                   target="_blank"
                   rel="noopener noreferrer"
-                  label="GitHub"
-                  value="github.com/Bess012"
-                  icon={
+                  className="group flex items-center gap-4 border border-amber/20 bg-panel p-4 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+                >
+                  <div className="w-10 h-10 shrink-0 border border-amber/30 bg-ink flex items-center justify-center text-amber group-hover:bg-amber group-hover:text-ink transition-all duration-200">
                     <svg
                       viewBox="0 0 24 24"
                       fill="currentColor"
@@ -1103,15 +884,32 @@ export default function App() {
                     >
                       <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z" />
                     </svg>
-                  }
-                />
-                <ContactLink
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-mono text-[10.5px] text-amberdim mb-0.5 uppercase tracking-wider">
+                      GitHub
+                    </div>
+                    <div className="font-mono text-[13.5px] text-paper">
+                      github.com/Bess012
+                    </div>
+                  </div>
+                  <svg
+                    className="ml-auto shrink-0 w-4 h-4 text-amber/30 group-hover:text-amber group-hover:translate-x-1 transition-all duration-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
+                <a
                   href="https://www.linkedin.com/in/bessem-jouini-a6a0a8341/"
                   target="_blank"
                   rel="noopener noreferrer"
-                  label="LinkedIn"
-                  value="Bessem Jouini"
-                  icon={
+                  className="group flex items-center gap-4 border border-amber/20 bg-panel p-4 hover:border-amber/50 hover:bg-amber/5 transition-all duration-200"
+                >
+                  <div className="w-10 h-10 shrink-0 border border-amber/30 bg-ink flex items-center justify-center text-amber group-hover:bg-amber group-hover:text-ink transition-all duration-200">
                     <svg
                       viewBox="0 0 24 24"
                       fill="currentColor"
@@ -1119,8 +917,25 @@ export default function App() {
                     >
                       <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                     </svg>
-                  }
-                />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="font-mono text-[10.5px] text-amberdim mb-0.5 uppercase tracking-wider">
+                      LinkedIn
+                    </div>
+                    <div className="font-mono text-[13.5px] text-paper">
+                      Bessem Jouini
+                    </div>
+                  </div>
+                  <svg
+                    className="ml-auto shrink-0 w-4 h-4 text-amber/30 group-hover:text-amber group-hover:translate-x-1 transition-all duration-200"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </a>
               </div>
               <button
                 onClick={async () => {
