@@ -55,7 +55,14 @@ const skills = [
       { name: "PyTorch", icon: "devicon-pytorch-original colored" },
       { name: "Pandas", iconSrc: "https://cdn.simpleicons.org/pandas/150458" },
       { name: "NumPy", iconSrc: "https://cdn.simpleicons.org/numpy/013243" },
+      { name: "TensorFlow", icon: "devicon-tensorflow-original colored" },
+    ],
+  },
+  {
+    cat: "DEVOPS",
+    items: [
       { name: "Docker", icon: "devicon-docker-plain colored" },
+      { name: "CI/CD", icon: "devicon-githubactions-plain colored" },
     ],
   },
 ];
@@ -810,20 +817,19 @@ export default function App() {
               CV
             </a>
           </div>
-
-          {/* Desktop nav — all 5 sections, always visible from md up */}
-          <nav className="hidden md:flex gap-6 font-mono text-[13px] text-paperdim">
-            {navLinks.map((l) => (
-              <a
-                key={l.id}
-                href={`#${l.id}`}
-                className={`transition-colors ${
-                  activeSection === l.id ? "text-amber" : "hover:text-amber"
-                }`}
-              >
-                {l.label}
-              </a>
-            ))}
+          <nav className="flex gap-6 font-mono text-[13px] text-paperdim">
+            <a href="#projects" className="hover:text-amber">
+              Projects
+            </a>
+            <a href="#experience" className="hover:text-amber">
+              Experience
+            </a>
+            <a href="#skills" className="hover:text-amber">
+              Skills
+            </a>
+            <a href="#contact" className="hover:text-amber">
+              Contact
+            </a>
           </nav>
 
           {/* Mobile menu toggle — only exists below md */}
@@ -880,8 +886,8 @@ export default function App() {
         )}
       </header>
 
-      <section id="home" className="border-b border-amber/20">
-        <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-20 lg:py-28 grid lg:grid-cols-[1.15fr_0.85fr] gap-8 lg:gap-14 items-center">
+      <section className="border-b border-amber/20">
+        <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-20 lg:py-28 grid lg:grid-cols-[1.15fr_0.85fr] gap-14 items-center">
           <div>
             <h1 className="font-bold leading-[1.06] text-[clamp(36px,5vw,64px)]">
               I build software that turns raw data into decisions.
