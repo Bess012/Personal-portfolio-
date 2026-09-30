@@ -641,8 +641,13 @@ export default function App() {
         <div className="max-w-[1240px] mx-auto px-6 lg:px-10 py-16 grid lg:grid-cols-[220px_1fr] gap-8 lg:gap-14">
           <Rail idx="02" title="Skills" />
           <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-px bg-amber/20 border border-amber/20">
-            {skills.map((s) => (
-              <div key={s.cat} className="bg-panel p-6">
+            {skills.map((s, i) => (
+              <div
+                key={s.cat}
+                className={`bg-panel p-6 ${
+                  i === skills.length - 1 ? "xl:col-start-2 xl:row-start-3" : ""
+                }`}
+              >
                 <div className="font-mono text-xs text-amber mb-3">{s.cat}</div>
                 <div className="flex flex-wrap gap-3">
                   {s.items.map((item) => (
@@ -673,9 +678,11 @@ export default function App() {
                 </div>
               </div>
             ))}
-            {/* Filler cells so the empty slots in the last row match the panel color */}
-            <div className="hidden sm:block bg-panel" />
-            <div className="hidden xl:block bg-panel" />
+            {/* Filler cells so empty slots match the panel color.
+                xl: last row is [filler][DevOps][filler]; sm: one filler beside DevOps */}
+            <div className="hidden sm:block xl:hidden bg-panel" />
+            <div className="hidden xl:block xl:col-start-1 xl:row-start-3 bg-panel" />
+            <div className="hidden xl:block xl:col-start-3 xl:row-start-3 bg-panel" />
           </div>
         </div>
       </section>
